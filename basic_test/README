@@ -1,0 +1,35 @@
+Tree
+   |- backup_service(1).
+   |- client(2).
+   |- fast_api_app(3).
+   |- server(4).
+
+Prerequisites:
+    - Python.
+    - Docker.
+    - Docker Compose.
+
+To run:
+    - Clone the repository.
+    - Create a virtual environment:
+        *   python<version> -m venv <virtual-environment-name>.
+        *   source <virtual-environment-name>/bin/activate.
+    - Run docker-compose up --build (first time).
+
+Explanation:
+
+(3) uses Uvicorn to execute a server with a simple app on port number 8080 of their container. It receives a GET request and responds with a timestamp.
+(4) uses NGINX as a reverse proxy to redirect HTTP requests from localhost:80 to fast_api_container:8080. NGINX also logs access data.
+(2) bash script to perform multiple HTTP requests to localhost:80.
+(1) Python script serving as a backup API, copying access logs from NGINX (3) to /backup_service/logs. It keeps a maximum of 7 backups and removes the older ones.
+
+All services have their own Dockerfile and use ports, volumes, and networks for communication.
+
+Variables (Docker-Compose):
+ - MAX_NUM_HTTP_REQUEST: client number of requests.
+ - REQUEST_TIME_SEG: client request time in seconds.
+ - MAX_NUM_BACKUPS: backup policy.
+ - TIME_BACKUP: time between backups.
+
+
+    

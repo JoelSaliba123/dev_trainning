@@ -1,0 +1,12 @@
+FROM python:3.9.3 
+# Copia el script y los archivos necesarios al contenedor
+COPY service.py /app/service.py
+
+# Instala las dependencias (smtplib es parte de la biblioteca estándar de Python)
+RUN pip3 install schedule
+
+# Define la carpeta de trabajo
+WORKDIR /app
+
+# Comando para ejecutar el script
+CMD ["python", "service.py"]

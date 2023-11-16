@@ -1,0 +1,14 @@
+# Utiliza una imagen base de Python 3.8
+FROM python:3.9-slim
+
+# Establece el directorio de trabajo en /app
+WORKDIR /app
+
+# Copia el código de tu API FastAPI al contenedor
+COPY main.py /app
+
+# Instala FastAPI y Uvicorn dentro del contenedor
+RUN pip install fastapi uvicorn
+
+# Comando para ejecutar la aplicación con Uvicorn
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]

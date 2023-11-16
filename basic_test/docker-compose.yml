@@ -1,0 +1,47 @@
+version: '3'
+services:
+  fastapi:
+    build:
+      context: ./fasp_api_app/
+      dockerfile: Dockerfile.api
+    networks:
+      - mi_red_personalizada  # Conectar el contenedor a la red personalizada
+
+  nginx:
+    build:
+      context: ./server/
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./server/logs:/var/log/nginx  # Mapear las rutas de logs
+    networks:
+      - mi_red_personalizada  # Conectar el contenedor a la red personalizada
+
+
+  client:
+    build:
+      context: ./client/
+      dockerfile: Dockerfile.client
+    networks:
+      - mi_red_personalizada  # Conéctalo a la misma red personalizada
+    environment:
+      - MAX_NUM_HTTP_REQUEST=10
+      - REQUEST_TIME_SEG=1
+
+  backup:
+    build:
+      context: ./backup_service/
+      dockerfile: Dockerfile.backup
+    networks:
+      - mi_red_personalizada  # Conéctalo a la misma red personalizada
+    volumes:
+    - ./server/logs:/logs  # Mapear las rutas de logs
+    - ./backup_service/logs/:/backup_data  # Nuevo volumen para guardar las copias de seguridad
+    environment:
+    - MAX_NUM_BACKUPS=7
+    - TIME_BACKUP=0.1
+
+
+networks:
+  mi_red_personalizada:  # Definir la red personalizada

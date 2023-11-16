@@ -1,0 +1,9 @@
+FROM ubuntu:latest
+LABEL maintainer="Your Name <contact@techiescamp.com>"
+RUN apt-get update && apt-get install -y curl \
+    && rm -rf /var/lib/apt/lists/*
+# Copy the script to the container
+COPY ./check_connection.sh /
+RUN chmod +x /check_connection.sh
+# Set the entrypoint to the script with CMD arguments
+ENTRYPOINT ["/check_connection.sh"]
